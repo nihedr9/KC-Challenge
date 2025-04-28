@@ -1,0 +1,164 @@
+openapi: 3.0.3
+info:
+  title: OpenWeatherMap
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: http://api.openweathermap.org/data/2.5
+paths:
+  /weather:
+    get:
+      summary: /weather
+      description: /weather
+      operationId: weather
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+        - name: lon
+          in: query
+          required: true
+          schema:
+            type: number
+        - name: units
+          in: query
+          schema:
+            type: string
+        - name: lang
+          in: query
+          schema:
+            type: string
+        - name: appid
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherResponse'
+
+components:
+  schemas:
+    
+    WeatherResponse:
+      type: object
+      properties:
+        base:
+          type: string
+          example: stations
+        clouds:
+          type: object
+          properties:
+            all:
+              type: number
+              example: 0
+        cod:
+          type: number
+          example: 200
+        coord:
+          type: object
+          properties:
+            lat:
+              type: number
+              example: 48.8589
+            lon:
+              type: number
+              example: 2.347
+        dt:
+          type: number
+          example: 1745850647
+        id:
+          type: number
+          example: 6455259
+        main:
+          type: object
+          properties:
+            feels_like:
+              type: number
+              example: 23.87
+            grnd_level:
+              type: number
+              example: 1013
+            humidity:
+              type: number
+              example: 39
+            pressure:
+              type: number
+              example: 1023
+            sea_level:
+              type: number
+              example: 1023
+            temp:
+              type: number
+              example: 24.36
+            temp_max:
+              type: number
+              example: 25.65
+            temp_min:
+              type: number
+              example: 22.84
+        name:
+          type: string
+          example: Paris
+        sys:
+          type: object
+          properties:
+            country:
+              type: string
+              example: FR
+            id:
+              type: number
+              example: 2012208
+            sunrise:
+              type: number
+              example: 1745814907
+            sunset:
+              type: number
+              example: 1745866848
+            type:
+              type: number
+              example: 2
+        timezone:
+          type: number
+          example: 7200
+        visibility:
+          type: number
+          example: 10000
+        weather:
+          type: array
+          items:
+            type: object
+            properties:
+              description:
+                type: string
+                example: ciel dégagé
+              icon:
+                type: string
+                example: 01d
+              id:
+                type: number
+                example: 800
+              main:
+                type: string
+                example: Clear
+          example:
+            - description: ciel dégagé
+              icon: 01d
+              id: 800
+              main: Clear
+        wind:
+          type: object
+          properties:
+            deg:
+              type: number
+              example: 20
+            speed:
+              type: number
+              example: 4.12
+tags: []

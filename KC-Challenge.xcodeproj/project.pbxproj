@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6009B9942DBFC370004971D4 /* WeatherClient in Frameworks */ = {isa = PBXBuildFile; productRef = 6009B9932DBFC370004971D4 /* WeatherClient */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		6009B9732DBFC22E004971D4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6009B9942DBFC370004971D4 /* WeatherClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 				6009B9672DBFC22D004971D4 /* KC-Challenge */,
 				6009B9752DBFC22E004971D4 /* KC-ChallengeTests */,
 				6009B97F2DBFC22E004971D4 /* KC-ChallengeUITests */,
+				6009B9922DBFC36A004971D4 /* Frameworks */,
 				6009B9662DBFC22D004971D4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +96,13 @@
 				6009B97C2DBFC22E004971D4 /* KC-ChallengeUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		6009B9922DBFC36A004971D4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +125,7 @@
 			);
 			name = "KC-Challenge";
 			packageProductDependencies = (
+				6009B9932DBFC370004971D4 /* WeatherClient */,
 			);
 			productName = "KC-Challenge";
 			productReference = 6009B9652DBFC22D004971D4 /* KC-Challenge.app */;
@@ -558,6 +572,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6009B9932DBFC370004971D4 /* WeatherClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WeatherClient;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6009B95D2DBFC22D004971D4 /* Project object */;
 }
