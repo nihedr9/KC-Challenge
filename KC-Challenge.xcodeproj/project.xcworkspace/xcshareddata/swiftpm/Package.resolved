@@ -1,5 +1,5 @@
 {
-  "originHash" : "fa60e7cbb37d62fb56acefc5e7c4454f0fd7bafee2a2b7fe548f2ce2c6ff64f5",
+  "originHash" : "da59d69def90f18f50e0c7324e9547ecbb290e335f726bc0fcfb6df9835fd4cd",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -188,6 +188,15 @@
       "state" : {
         "revision" : "f99ae8aa18f0cf0d53481901f88a0991dc3bd4a2",
         "version" : "601.0.1"
+      }
+    },
+    {
+      "identity" : "swiftlocation",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/malcommac/SwiftLocation",
+      "state" : {
+        "revision" : "010073e62cea4daefea61042a51b8619d23cdc35",
+        "version" : "6.0.0"
       }
     },
     {

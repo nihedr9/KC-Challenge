@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6009B9942DBFC370004971D4 /* WeatherClient in Frameworks */ = {isa = PBXBuildFile; productRef = 6009B9932DBFC370004971D4 /* WeatherClient */; };
 		6009BAD02DBFF505004971D4 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 6009BACF2DBFF505004971D4 /* ComposableArchitecture */; };
+		6009BAE52DBFFA10004971D4 /* LocationService in Frameworks */ = {isa = PBXBuildFile; productRef = 6009BAE42DBFFA10004971D4 /* LocationService */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,9 +35,22 @@
 		6009B97C2DBFC22E004971D4 /* KC-ChallengeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "KC-ChallengeUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6009BAE72DC08197004971D4 /* Exceptions for "KC-Challenge" folder in "KC-Challenge" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6009B9642DBFC22D004971D4 /* KC-Challenge */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6009B9672DBFC22D004971D4 /* KC-Challenge */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6009BAE72DC08197004971D4 /* Exceptions for "KC-Challenge" folder in "KC-Challenge" target */,
+			);
 			path = "KC-Challenge";
 			sourceTree = "<group>";
 		};
@@ -59,6 +73,7 @@
 			files = (
 				6009BAD02DBFF505004971D4 /* ComposableArchitecture in Frameworks */,
 				6009B9942DBFC370004971D4 /* WeatherClient in Frameworks */,
+				6009BAE52DBFFA10004971D4 /* LocationService in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,6 +144,7 @@
 			packageProductDependencies = (
 				6009B9932DBFC370004971D4 /* WeatherClient */,
 				6009BACF2DBFF505004971D4 /* ComposableArchitecture */,
+				6009BAE42DBFFA10004971D4 /* LocationService */,
 			);
 			productName = "KC-Challenge";
 			productReference = 6009B9652DBFC22D004971D4 /* KC-Challenge.app */;
@@ -420,8 +436,12 @@
 				DEVELOPMENT_TEAM = 784WPTD3P6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "KC-Challenge/Info.plist";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Yout location is used to fetch weather data";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Yout location is used to fetch weather data";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Yout location is used to fetch weather data";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Yout location is used to fetch weather data";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -453,8 +473,12 @@
 				DEVELOPMENT_TEAM = 784WPTD3P6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "KC-Challenge/Info.plist";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Yout location is used to fetch weather data";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Yout location is used to fetch weather data";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Yout location is used to fetch weather data";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Yout location is used to fetch weather data";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -609,6 +633,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6009BACE2DBFF505004971D4 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
+		};
+		6009BAE42DBFFA10004971D4 /* LocationService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LocationService;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
