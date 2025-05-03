@@ -4,13 +4,13 @@
 import PackageDescription
 
 let package = Package(
-  name: "WeatherClient",
+  name: "WeatherService",
   platforms: [.iOS(.v18)],
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(
-      name: "WeatherClient",
-      targets: ["WeatherClient"]),
+      name: "WeatherService",
+      targets: ["WeatherService"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-openapi-generator", from: "1.7.1"),
@@ -21,7 +21,7 @@ let package = Package(
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
-      name: "WeatherClient",
+      name: "WeatherService",
       dependencies: [
         .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
         .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession"),
@@ -30,8 +30,8 @@ let package = Package(
         .plugin(name: "OpenAPIGenerator", package: "swift-openapi-generator"),
       ]),
     .testTarget(
-      name: "WeatherClientTests",
-      dependencies: ["WeatherClient"]
+      name: "WeatherServiceTests",
+      dependencies: ["WeatherService"]
     ),
   ]
 )

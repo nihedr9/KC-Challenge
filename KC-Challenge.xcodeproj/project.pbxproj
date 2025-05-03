@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6009B9942DBFC370004971D4 /* WeatherClient in Frameworks */ = {isa = PBXBuildFile; productRef = 6009B9932DBFC370004971D4 /* WeatherClient */; };
 		6009BAD02DBFF505004971D4 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 6009BACF2DBFF505004971D4 /* ComposableArchitecture */; };
 		6009BAE52DBFFA10004971D4 /* LocationService in Frameworks */ = {isa = PBXBuildFile; productRef = 6009BAE42DBFFA10004971D4 /* LocationService */; };
+		60CA148F2DC513A00005D280 /* WeatherService in Frameworks */ = {isa = PBXBuildFile; productRef = 60CA148E2DC513A00005D280 /* WeatherService */; };
+		60CA14F02DC6A9930005D280 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 60CA14EF2DC6A9930005D280 /* Kingfisher */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,8 +72,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60CA14F02DC6A9930005D280 /* Kingfisher in Frameworks */,
+				60CA148F2DC513A00005D280 /* WeatherService in Frameworks */,
 				6009BAD02DBFF505004971D4 /* ComposableArchitecture in Frameworks */,
-				6009B9942DBFC370004971D4 /* WeatherClient in Frameworks */,
 				6009BAE52DBFFA10004971D4 /* LocationService in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -142,9 +144,10 @@
 			);
 			name = "KC-Challenge";
 			packageProductDependencies = (
-				6009B9932DBFC370004971D4 /* WeatherClient */,
 				6009BACF2DBFF505004971D4 /* ComposableArchitecture */,
 				6009BAE42DBFFA10004971D4 /* LocationService */,
+				60CA148E2DC513A00005D280 /* WeatherService */,
+				60CA14EF2DC6A9930005D280 /* Kingfisher */,
 			);
 			productName = "KC-Challenge";
 			productReference = 6009B9652DBFC22D004971D4 /* KC-Challenge.app */;
@@ -230,6 +233,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				6009BACE2DBFF505004971D4 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				60CA14EE2DC6A9930005D280 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6009B9662DBFC22D004971D4 /* Products */;
@@ -622,13 +626,17 @@
 				minimumVersion = 1.19.1;
 			};
 		};
+		60CA14EE2DC6A9930005D280 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.3.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		6009B9932DBFC370004971D4 /* WeatherClient */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = WeatherClient;
-		};
 		6009BACF2DBFF505004971D4 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6009BACE2DBFF505004971D4 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
@@ -637,6 +645,15 @@
 		6009BAE42DBFFA10004971D4 /* LocationService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LocationService;
+		};
+		60CA148E2DC513A00005D280 /* WeatherService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WeatherService;
+		};
+		60CA14EF2DC6A9930005D280 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 60CA14EE2DC6A9930005D280 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

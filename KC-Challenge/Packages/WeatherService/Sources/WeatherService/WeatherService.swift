@@ -5,7 +5,18 @@ import OpenAPIRuntime
 import OpenAPIURLSession
 import Foundation
 
-public struct WeatherClient {
+public typealias WeatherResponse = Components.Schemas.WeatherResponse
+
+protocol WeatherServiceProtocol {
+  func getWeather(
+    lat: Double,
+    long: Double,
+    units: String?,
+    lang: String?
+  ) async throws -> Components.Schemas.WeatherResponse
+}
+
+public struct WeatherService: WeatherServiceProtocol {
     
   let apiKey: String
   
@@ -37,5 +48,13 @@ public struct WeatherClient {
     try await client
       .weather(query: .init(lat: lat, lon: long, units: units, lang: lang, appid: apiKey))
       .ok.body.json
+  }
+}
+
+extension WeatherResponse {
+  public var iconURL: URL? {
+    guard let icon = weather.first?.icon,
+    let url = URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png") else { return nil }
+    return url
   }
 }

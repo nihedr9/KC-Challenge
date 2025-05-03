@@ -1,9 +1,9 @@
 import Testing
-@testable import WeatherClient
+@testable import WeatherService
 
-struct WeatherClientTests {
+struct WeatherServiceTests {
   
-  let client = WeatherClient(apiKey: "bcfd8daab09ad5320c7f92ff23072c36")
+  let client = WeatherService(apiKey: "bcfd8daab09ad5320c7f92ff23072c36")
   
   @Test(
     "fetch `Paris` weather by lat and long coordinates",
@@ -21,7 +21,6 @@ struct WeatherClientTests {
       units: units,
       lang: lang
     )
-    #expect(response.weather != nil)
     #expect(response.name == "Paris")
     #expect(response.coord?.lat == lat)
     #expect(response.coord?.lon == long)
