@@ -1,5 +1,5 @@
 //
-//  Story.swift
+//  Stories.swift
 //  KC-Challenge
 //
 //  Created by Nihed Majdoub on 03/05/2025.
@@ -9,16 +9,19 @@ import ComposableArchitecture
 import Foundation
 
 @Reducer
-struct Story {
+struct Stories {
   
   @ObservableState
   struct State: Equatable {
-    var story: StoryModel?
+    var user = User.mock
+    var stories: [Story] = []
+    var selectedStory: Story?
   }
   
   enum Action {
-    case fetchStory
-    case setStory(StoryModel)
+    case fetchStories
+    case setStories([Story])
+    case nextImage
     case closeButtonTapped
   }
   
@@ -27,33 +30,34 @@ struct Story {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .fetchStory:
+      case .fetchStories:
         // we propably here have to fetch stories from an api
         // but for now we will use a mock
         return .run { send in
-          await send(.setStory(.mock(id: UUID())))
+          await send(.setStories(Story.mocks(count: 5)))
         }
-      case .setStory(let story):
-        state.story = story
+      case .setStories(let stories):
+        state.stories = stories
+        state.selectedStory = stories.randomElement()
         return .none
       case .closeButtonTapped:
         return .run { _ in await dismiss() }
+      case .nextImage:
+        state.selectedStory = state.stories.randomElement()
+        return .none
       }
     }
   }
 }
 
-extension StoryModel {
-  static func mock(id: UUID) -> StoryModel {
-    StoryModel(
-      id: id,
-      user: .mock,
-      imagesURL: [
-        URL(string: "https://picsum.photos/1920/1080?random=\(id.uuidString)")!,
-        URL(string: "https://picsum.photos/1920?random=\(id.uuidString)")!,
-        URL(string: "https://picsum.photos/1080?random=\(id.uuidString)")!
-      ]
-    )
+extension Story {
+  static func mocks(count: Int) -> [Story] {
+    var stories = [Story]()
+    for i in 0..<count {
+      stories.append(.init(id: "\(i)", imageURL: .init(string: "https://picsum.photos/1920/1080?random=\(i)")!))
+    }
+    
+    return stories
   }
 }
 

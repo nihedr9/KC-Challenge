@@ -15,7 +15,7 @@ struct Weather{
   
   @Reducer(state: .equatable)
   enum Destination {
-    case popover(Story)
+    case popover(Stories)
   }
   
   @ObservableState
@@ -99,7 +99,7 @@ struct Weather{
       case .openSettings:
         return .run { _ in await openSettings() }
       case .showStories:
-        state.destination = .popover(Story.State())
+        state.destination = .popover(Stories.State())
         return .none
       case .destination:
         return .none

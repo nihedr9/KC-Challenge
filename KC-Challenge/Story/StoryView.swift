@@ -11,30 +11,30 @@ import Kingfisher
 
 struct StoryView: View {
   
-  let store: StoreOf<Story>
+  let store: StoreOf<Stories>
 
   var body: some View {
     ZStack {
       
       GeometryReader { geo in
         
-        KFImage(store.story?.imagesURL.first)
+        KFImage(store.selectedStory?.imageURL)
           .resizable()
           .fade(duration: 0.2)
-          .aspectRatio(contentMode: .fill)
+          .scaledToFill()
           .frame(width: geo.size.width)
           .ignoresSafeArea()
           .overlay(alignment: .top) {
             headerView
           }
-        
+          .onTapGesture {
+            store.send(.nextImage)
+          }
       }
     }
     .onAppear {
-//      viewModel.scheduleTimer(action: dismissView)
-      store.send(.fetchStory)
+      store.send(.fetchStories)
     }
-//    .onDisappear { viewModel.invalidateTimer() }
   }
   
   private var headerView: some View {
@@ -60,14 +60,14 @@ struct StoryView: View {
   
   private var userView: some View {
     HStack {
-      KFImage(store.story?.user.avatarURL)
+      KFImage(store.user.avatarURL)
         .resizable()
         .fade(duration: 0.2)
         .scaledToFill()
         .frame(width: 40, height: 40)
         .clipShape(Circle())
       
-      Text(store.story?.user.name ?? "")
+      Text(store.user.name)
         .font(.callout)
       
       Spacer()

@@ -1,5 +1,5 @@
 //
-//  StoryModel.swift
+//  Story.swift
 //  KC-Challenge
 //
 //  Created by Nihed Majdoub on 04/05/2025.
@@ -7,10 +7,9 @@
 
 import Foundation
 
-struct StoryModel: Identifiable, Equatable {
-  let id: UUID
-  let user: User
-  let imagesURL: [URL]
+struct Story: Identifiable, Equatable {
+  let id: String
+  let imageURL: URL
 }
 
 struct User: Identifiable, Equatable {
