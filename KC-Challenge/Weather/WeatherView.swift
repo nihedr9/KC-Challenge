@@ -13,15 +13,15 @@ struct WeatherView: View {
   
   @Bindable var store: StoreOf<Weather>
   @Environment(\.scenePhase) var scenePhase
-  
+
   var body: some View {
     VStack(spacing: 24) {
       VStack {
         switch store.response {
         case .success(let weather):
           weatherView(for: weather)
-        case .failure:
-          openSettingsView
+        case .failure(let error):
+          errorView(error)
         }
       }
       
@@ -35,6 +35,14 @@ struct WeatherView: View {
     }
     .onAppear {
       store.send(.checkLocationPermission)
+    }
+    .onChange(of: scenePhase) { _, newPhase in
+      switch newPhase {
+      case .active:
+        store.send(.checkLocationPermission)
+      default:
+        break
+      }
     }
   }
   
@@ -73,12 +81,37 @@ struct WeatherView: View {
     }
   }
   
-  private var openSettingsView: some View {
+  private func errorView(_ error: WeatherError) -> some View {
     VStack {
-      ContentUnavailableView("Please enable location service",
-                             systemImage: "location.slash.fill")
-      Button("open Settings") {
+      ContentUnavailableView {
+        VStack {
+          Image(systemName: "location.slash.fill")
+          Text(error.title)
+        }
+      } description: {
+        Text(error.description)
+      } actions: {
+       errorActionView(error)
+      }
+    }
+  }
+  
+  @ViewBuilder
+  private func errorActionView(_ error: WeatherError) -> some View {
+    switch error {
+    case .locationPermissionDenied,
+        .locationPermissionIsDisabled,
+        .cannotFetchLocation:
+      Button("Open Settings") {
         store.send(.openSettings)
+      }
+    case .cannotFetchWeather:
+      Button("retry") {
+        store.send(.fetchUserLocation)
+      }
+    case .locationPermissionNotDetermined:
+      Button("Request Location Permission") {
+        store.send(.askForLocationPermission)
       }
     }
   }

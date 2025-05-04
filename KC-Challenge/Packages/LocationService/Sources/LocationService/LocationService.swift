@@ -4,6 +4,7 @@ import SwiftLocation
 
 protocol LocationServiceProtocol {
   var isEnabled: Bool { get async }
+  var authorizationStatus: CLAuthorizationStatus { get async }
   func getUserLocation() async throws -> CLLocation
   func requestPermission() async throws -> CLAuthorizationStatus
 }
@@ -15,9 +16,17 @@ public struct LocationService: LocationServiceProtocol {
   
   public init() { }
   
-  internal var isEnabled: Bool {
+  public var isEnabled: Bool {
     get async {
       await manager.locationServicesEnabled
+    }
+  }
+  
+  public var authorizationStatus: CLAuthorizationStatus {
+    get async {
+      await MainActor.run {
+        manager.authorizationStatus
+      }
     }
   }
   
@@ -30,6 +39,7 @@ public struct LocationService: LocationServiceProtocol {
     return location
   }
   
+  @discardableResult
   public func requestPermission() async throws -> CLAuthorizationStatus {
     guard await isEnabled else {
       throw LocationErrors.locationServicesDisabled
@@ -56,6 +66,24 @@ extension CLAuthorizationStatus {
   public var isAuthorized: Bool {
     switch self {
     case .authorizedAlways, .authorizedWhenInUse:
+      return true
+    default:
+      return false
+    }
+  }
+  
+  public var isDenied: Bool {
+    switch self {
+    case .denied, .restricted:
+      return true
+    default:
+      return false
+    }
+  }
+  
+  public var isNotDetermined: Bool {
+    switch self {
+    case .notDetermined:
       return true
     default:
       return false

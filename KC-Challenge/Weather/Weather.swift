@@ -36,6 +36,7 @@ struct Weather{
   }
   
   enum Action {
+    case askForLocationPermission
     case checkLocationPermission
     case fetchUserLocation
     case fetchWeather(CLLocation)
@@ -51,23 +52,39 @@ struct Weather{
   @Dependency(OpenSettingsKey.self) var openSettings
   
   var body: some Reducer<State, Action> {
-    Reduce {
-      state,
-      action in
+    Reduce { state, action in
       switch action {
+        
+      case .askForLocationPermission:
+        return .run { send in
+          do {
+            try await userLocationClient.requestPermission()
+          } catch {
+            await send(.setError(.cannotFetchLocation))
+          }
+        }
+        
       case .checkLocationPermission:
         return .run { send in
           do {
-            let status = try await userLocationClient.requestPermission()
-            if status.isAuthorized {
-              await send(.fetchUserLocation)
-            } else {
+            let isEnabled = try await userLocationClient.isEnabled()
+            guard isEnabled else {
+              await send(.setError(.locationPermissionIsDisabled))
+              return
+            }
+            let status = try await userLocationClient.authorizedStatus()
+            if status.isNotDetermined {
+              await send(.setError(.locationPermissionNotDetermined))
+            } else if status.isDenied {
               await send(.setError(.locationPermissionDenied))
+            } else if status.isAuthorized {
+              await send(.fetchUserLocation)
             }
           } catch {
             await send(.setError(.locationPermissionDenied))
           }
         }
+        
       case .fetchUserLocation:
         return .run { send in
           do {
@@ -98,47 +115,15 @@ struct Weather{
         
       case .openSettings:
         return .run { _ in await openSettings() }
+        
       case .showStories:
         state.destination = .popover(Stories.State())
         return .none
+        
       case .destination:
         return .none
       }
     }
     .ifLet(\.$destination, action: \.destination)
   }
-}
-
-enum WeatherError: Error {
-  case locationPermissionDenied
-  case cannotFetchLocation
-  case cannotFetchWeather
-}
-
-extension WeatherModel {
-  
-  init(from response: WeatherResponse) {
-    self.id = "\(response.id)"
-    self.cityName = response.name
-    self.description = response.weather.first?.description ?? ""
-    self.temperature = "\(Int(response.main.temp.rounded(.up)))°C"
-    self.feelsLike = "\(Int(response.main.feelsLike.rounded(.up)))°C"
-    self.min = "\(Int(response.main.tempMin.rounded(.up)))°C"
-    self.max = "\(Int(response.main.tempMax.rounded(.up)))°C"
-    self.iconURL = response.iconURL
-  }
-}
-
-
-extension WeatherModel {
-  static let mock = WeatherModel(from: .mock)
-}
-
-extension WeatherResponse {
-  static let mock = WeatherResponse(
-    id: 0,
-    main: .init(feelsLike: 17, temp: 18, tempMax: 20, tempMin: 10),
-    name: "Paris",
-    weather: [.init(description: "ciel dégagé", icon: "01d", id: 0, main: "")]
-  )
 }

@@ -39,17 +39,21 @@ extension WeatherClient: TestDependencyKey {
 
 @DependencyClient
 struct UserLocationClient {
+  var isEnabled: @Sendable () async throws -> Bool
+  var authorizedStatus:  @Sendable () async throws -> CLAuthorizationStatus
   var getUserLocation: @Sendable () async throws -> CLLocation
-  var requestPermission: () async throws -> CLAuthorizationStatus
+  var requestPermission: @Sendable () async throws -> Void
 }
 
 extension UserLocationClient: DependencyKey {
   static let liveValue = Self {
-    let locationService = await LocationService()
-    return try await locationService.getUserLocation()
+    await LocationService().isEnabled
+  } authorizedStatus: {
+    await LocationService().authorizationStatus
+  } getUserLocation: {
+    try await LocationService().getUserLocation()
   } requestPermission: {
-    let locationService = await LocationService()
-    return try await locationService.requestPermission()
+    try await LocationService().requestPermission()
   }
 }
 
@@ -61,10 +65,12 @@ extension UserLocationClient: TestDependencyKey {
   )
   
   static let previewValue = Self {
+    true
+  } authorizedStatus: {
+    .notDetermined
+  } getUserLocation: {
     parisCoordinates
-  } requestPermission: {
-    .authorizedWhenInUse
-  }
+  } requestPermission: {}
   
   static let testValue = Self()
 }
