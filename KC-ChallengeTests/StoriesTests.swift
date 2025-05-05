@@ -16,6 +16,7 @@ struct StoriesTests {
   
   @Test
   func fetchStories() async throws {
+    
     let store = TestStore(initialState: Stories.State()) {
       Stories()
     } withDependencies: {
@@ -61,6 +62,24 @@ struct StoriesTests {
     
     await store.receive(\.setTimer) {
       $0.currentStory = stories.last
+    }
+  }
+  
+  @Test
+  func setNextStory() async throws {
+    let store = TestStore(initialState: Stories.State()) {
+      Stories()
+    } withDependencies: {
+      $0.continuousClock = ImmediateClock()
+    }
+    store.exhaustivity = .off
+
+    let stories = StoryModel.mocks(count: 5)
+
+    await store.send(.fetchStories)
+    await store.send(.nextStory)
+    await store.send(.setTimer) {
+      $0.currentStory = stories[1]
     }
   }
 }

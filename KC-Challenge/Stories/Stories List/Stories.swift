@@ -88,7 +88,6 @@ struct Stories {
         guard let story = state.currentStory,
               story.duration >= state.timeElapsed else {
           return .run { send in
-            await send(.cancelTimer)
             await send(.nextStory)
           }
         }
