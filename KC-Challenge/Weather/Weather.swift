@@ -22,24 +22,24 @@ struct Weather{
   struct State: Equatable {
     @Presents var destination: Destination.State?
     var isRequestInFlight = false
-    var response: Result<WeatherModel, WeatherError> = .success(.plcaeholder)
+    var response: Result<WeatherModel, WeatherError> = .success(.placeholder)
   }
   
   enum Action {
     case askForLocationPermission
     case checkLocationPermission
-    case fetchUserLocation
+    case fetchWeatherTapped
     case setRequestInFlight(Bool)
     case fetchWeather(CLLocation)
-    case updateResponse(WeatherModel)
+    case setResponse(WeatherModel)
     case setError(WeatherError)
     case openSettings
     case destination(PresentationAction<Destination.Action>)
     case showStories
   }
   
-  @Dependency(UserLocationClient.self) var userLocationClient
-  @Dependency(WeatherClient.self) var weatherClient
+  @Dependency(\.userLocationClient) var userLocationClient
+  @Dependency(\.weatherClient) var weatherClient
   @Dependency(OpenSettingsKey.self) var openSettings
   
   var body: some Reducer<State, Action> {
@@ -48,57 +48,47 @@ struct Weather{
         
       case .askForLocationPermission:
         return .run { send in
-          do {
             try await userLocationClient.requestPermission()
-          } catch {
-            await send(.setError(.cannotFetchLocation))
-          }
+        } catch: { _, send in
+          await send(.setError(.cannotFetchLocation))
         }
         
       case .checkLocationPermission:
         return .run { send in
-          do {
-            let isEnabled = try await userLocationClient.isEnabled()
-            guard isEnabled else {
-              await send(.setError(.locationPermissionIsDisabled))
-              return
-            }
-            let status = try await userLocationClient.authorizedStatus()
-            if status.isNotDetermined {
-              await send(.setError(.locationPermissionNotDetermined))
-            } else if status.isDenied {
-              await send(.setError(.locationPermissionDenied))
-            } else if status.isAuthorized {
-              await send(.fetchUserLocation)
-            }
-          } catch {
-            await send(.setError(.locationPermissionDenied))
+          let isEnabled = try await userLocationClient.isEnabled()
+          guard isEnabled else {
+            await send(.setError(.locationPermissionIsDisabled))
+            return
           }
+          let status = try await userLocationClient.authorizedStatus()
+          if status.isNotDetermined {
+            await send(.setError(.locationPermissionNotDetermined))
+          } else if status.isDenied {
+            await send(.setError(.locationPermissionDenied))
+          } else if status.isAuthorized {
+            await send(.fetchWeatherTapped)
+          }
+        } catch: { _, send in
+          await send(.setError(.locationPermissionDenied))
         }
         
-      case .fetchUserLocation:
+      case .fetchWeatherTapped:
         return .run { send in
-          do {
-            await send(.updateResponse(.plcaeholder))
-            await send(.setRequestInFlight(true))
-            let userLocation = try await userLocationClient.getUserLocation()
-            await send(.fetchWeather(userLocation))
-          } catch {
-            await send(.setError(.cannotFetchLocation))
-          }
+          await send(.setResponse(.placeholder))
+          await send(.setRequestInFlight(true))
+          let userLocation = try await userLocationClient.getUserLocation()
+          await send(.fetchWeather(userLocation))
         }
         
       case .fetchWeather(let location):
         return .run { send in
-          do {
-            let response = try await weatherClient.fetchWeather(location)
-            await send(.updateResponse(.init(from: response)))
-          } catch {
-            await send(.setError(.cannotFetchWeather))
-          }
+          let response = try await weatherClient.fetchWeather(location)
+          await send(.setResponse(.init(from: response)))
+        } catch: { _, send in
+          await send(.setError(.cannotFetchWeather))
         }
         
-      case .updateResponse(let model):
+      case .setResponse(let model):
         state.response = .success(model)
         state.isRequestInFlight = false
         return .none

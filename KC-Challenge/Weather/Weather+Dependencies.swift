@@ -32,9 +32,16 @@ extension WeatherClient: DependencyKey {
 
 extension WeatherClient: TestDependencyKey {
   static let previewValue = Self { _ in .mock }
-  
-  static let testValue = Self()
+  static let testValue = Self { _ in .mock }
 }
+
+extension DependencyValues {
+  var weatherClient: WeatherClient {
+    get { self[WeatherClient.self] }
+    set { self[WeatherClient.self] = newValue }
+  }
+}
+
 
 // MARK: - Location Client
 
@@ -60,21 +67,30 @@ extension UserLocationClient: DependencyKey {
 
 extension UserLocationClient: TestDependencyKey {
   
-  static let parisCoordinates = CLLocation(
-    latitude: 48.8575,
-    longitude: 2.3514
-  )
-  
   static let previewValue = Self {
     true
   } authorizedStatus: {
-    .notDetermined
+    .authorizedWhenInUse
   } getUserLocation: {
-    parisCoordinates
+    .paris
   } requestPermission: {}
   
-  static let testValue = Self()
+  static let testValue = Self {
+    true
+  } authorizedStatus: {
+    .authorizedWhenInUse
+  } getUserLocation: {
+    .paris
+  } requestPermission: {}
 }
+
+extension DependencyValues {
+  var userLocationClient: UserLocationClient {
+    get { self[UserLocationClient.self] }
+    set { self[UserLocationClient.self] = newValue }
+  }
+}
+
 
 // MARK: - Settings
 
@@ -83,5 +99,15 @@ enum OpenSettingsKey: DependencyKey {
     await MainActor.run {
       UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
     }
+  }
+}
+
+extension CLLocation {
+  
+  static var paris: CLLocation {
+    CLLocation(
+      latitude: 48.8575,
+      longitude: 2.3514
+    )
   }
 }

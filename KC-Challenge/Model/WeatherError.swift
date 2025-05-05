@@ -40,4 +40,13 @@ enum WeatherError: Error {
       "Please try again later."
     }
   }
+  
+  var sysImageName: String {
+    switch self {
+    case .cannotFetchWeather:
+      "icloud.slash"
+    default:
+      "location.slash.fill"
+    }
+  }
 }

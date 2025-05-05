@@ -16,21 +16,16 @@ struct StoriesView: View {
   var body: some View {
     TabView(selection: $store.currentStory.sending(\.setCurrentStory)) {
       ForEach(store.stories) { story in
-        StoryView(
-          store: .init(
-            initialState: .init(story: story),
-            reducer: {
-              Story()
-            })
-        )
-        .tag(story)
+        StoryView(story: story)
+          .tag(story)
       }
     }
     .overlay(alignment: .top) {
       headerView
+        .tag(store.currentStory)
     }
     .tabViewStyle(.page(indexDisplayMode: .never))
-    .ignoresSafeArea()
+    .ignoresSafeArea(edges: [.bottom])
     .onAppear {
       store.send(.fetchStories)
     }
@@ -86,6 +81,12 @@ struct StoriesView: View {
   }
 }
 
-//#Preview {
-//  StoriesView()
-//}
+#Preview {
+  StoriesView(
+    store: .init(
+      initialState: Stories.State(),
+      reducer: {
+        Stories()
+      })
+  )
+}

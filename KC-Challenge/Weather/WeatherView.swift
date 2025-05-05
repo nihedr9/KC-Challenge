@@ -82,7 +82,7 @@ struct WeatherView: View {
           .unredacted()
       } else {
         Button("Fetch Weather") {
-          store.send(.fetchUserLocation)
+          store.send(.fetchWeatherTapped)
         }
       }
     }
@@ -92,7 +92,7 @@ struct WeatherView: View {
     VStack {
       ContentUnavailableView {
         VStack {
-          Image(systemName: "location.slash.fill")
+          Image(systemName: error.sysImageName)
           Text(error.title)
         }
       } description: {
@@ -114,7 +114,7 @@ struct WeatherView: View {
       }
     case .cannotFetchWeather:
       Button("retry") {
-        store.send(.fetchUserLocation)
+        store.send(.fetchWeatherTapped)
       }
     case .locationPermissionNotDetermined:
       Button("Request Location Permission") {

@@ -11,12 +11,12 @@ import Kingfisher
 
 struct StoryView: View {
   
-  let store: StoreOf<Story>
-  
+  let story: StoryModel
+
   var body: some View {
     ZStack {
       GeometryReader { geo in
-        KFImage(store.story.imageURL)
+        KFImage(story.imageURL)
           .resizable()
           .fade(duration: 0.2)
           .scaledToFill()
@@ -24,74 +24,6 @@ struct StoryView: View {
           .clipped()
           .ignoresSafeArea()
       }
-//      .overlay(alignment: .top) {
-//        headerView
-//      }
     }
-//    .onAppear {
-//      store.send(.setTimer)
-//    }
-//    .onDisappear {
-//      store.send(.onDisappear)
-//    }
-  }
-  
-  private var headerView: some View {
-    ZStack {
-      Color.black.opacity(0.4)
-        .background(.ultraThinMaterial)
-      VStack(alignment: .leading, spacing: 8) {
-        progressView
-        userView
-      }
-      .padding()
-    }
-    .frame(height: 80)
-  }
-  
-  private var progressView: some View {
-    StoryBarView(progress: store.state.progress)
-      .frame(height: 4)
-  }
-  
-  private var userView: some View {
-    HStack {
-      KFImage(store.story.user.avatarURL)
-        .resizable()
-        .fade(duration: 0.2)
-        .scaledToFill()
-        .frame(width: 40, height: 40)
-        .clipShape(Circle())
-      
-      Text(store.story.user.name)
-        .font(.callout)
-      
-      Spacer()
-      
-      Button {
-        dismissView()
-      } label: {
-        Image(systemName: "xmark")
-          .font(.title)
-      }
-    }
-    .foregroundStyle(.white)
-  }
-  
-  private func dismissView() {
-    store.send(.closeButtonTapped)
   }
 }
-
-#Preview {
-  StoryView(
-    store: .init(
-      initialState: Story.State(
-        story: .mocks(count: 1).first!
-      ),
-      reducer: {
-        Story()
-      })
-  )
-}
-

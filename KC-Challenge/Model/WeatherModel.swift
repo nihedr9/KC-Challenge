@@ -35,7 +35,7 @@ extension WeatherModel {
 
 
 extension WeatherModel {
-  static let plcaeholder = WeatherModel(
+  static let placeholder = WeatherModel(
     id: "id",
     cityName: "--",
     description: "",

@@ -24,5 +24,14 @@ extension StoriesClient: TestDependencyKey {
     StoryModel.mocks(count: count)
   }
   
-  static let testValue = Self()
+  static let testValue = Self { count in
+    StoryModel.mocks(count: count)
+  }
+}
+
+extension DependencyValues {
+  var storiesClient: StoriesClient {
+    get { self[StoriesClient.self] }
+    set { self[StoriesClient.self] = newValue }
+  }
 }

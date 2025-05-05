@@ -12,8 +12,8 @@ import Foundation
 struct Stories {
   
   @ObservableState
-  struct State: Equatable {
-    var stories: [StoryModel] = StoryModel.mocks(count: 5)
+  struct State: Equatable, Hashable {
+    var stories: [StoryModel] = []
     var currentStory: StoryModel?
     var timeElapsed = 0.0
     var progress = 0.0
@@ -23,7 +23,6 @@ struct Stories {
     case fetchStories
     case setStories([StoryModel])
     case setCurrentStory(StoryModel?)
-    case nextImage
     case setTimer
     case timerTicked(Double)
     case cancelTimer
@@ -31,9 +30,11 @@ struct Stories {
   }
   
   @Dependency(\.dismiss) var dismiss
-  @Dependency(StoriesClient.self) var storiesClient
+  @Dependency(\.storiesClient) var storiesClient
   @Dependency(\.continuousClock) var clock
   private enum CancelID { case timer }
+  
+  private let storiesCount = 5
   
   var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -41,7 +42,7 @@ struct Stories {
         
       case .fetchStories:
         return .run { send in
-          let stories = try await storiesClient.fetchStories(5)
+          let stories = try await storiesClient.fetchStories(storiesCount)
           await send(.setStories(stories))
         }
         
@@ -57,15 +58,11 @@ struct Stories {
           await send(.setTimer)
         }
         
-      case .nextImage:
-        return .run { [stories = state.stories] send in
-          await send(.setCurrentStory(stories.randomElement()))
-        }
-        
       case .setTimer:
-        let interval = 0.2
         state.timeElapsed = 0
         state.progress = 0
+        
+        let interval = 0.2
         return .run { send in
           for await _ in clock.timer(interval: .seconds(interval)) {
             await send(.timerTicked(interval), animation: .smooth)
