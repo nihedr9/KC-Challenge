@@ -24,7 +24,7 @@ struct Stories {
     case setStories([StoryModel])
     case setCurrentStory(StoryModel?)
     case setTimer
-    case timerTicked(Double)
+    case timerTicked
     case cancelTimer
     case closeButtonTapped
   }
@@ -35,7 +35,8 @@ struct Stories {
   private enum CancelID { case timer }
   
   private let storiesCount = 5
-  
+  private let interval = 0.2
+
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
@@ -62,15 +63,14 @@ struct Stories {
         state.timeElapsed = 0
         state.progress = 0
         
-        let interval = 0.2
         return .run { send in
           for await _ in clock.timer(interval: .seconds(interval)) {
-            await send(.timerTicked(interval), animation: .smooth)
+            await send(.timerTicked, animation: .smooth)
           }
         }
         .cancellable(id: CancelID.timer, cancelInFlight: true)
         
-      case .timerTicked(let interval):
+      case .timerTicked:
         guard let story = state.currentStory,
               story.duration >= state.timeElapsed else {
           return .run { await $0(.cancelTimer) }
