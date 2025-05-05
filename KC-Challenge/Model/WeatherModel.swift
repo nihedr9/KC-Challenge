@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import WeatherService
 
 struct WeatherModel: Identifiable, Hashable, Equatable {
   let id: String
@@ -32,6 +33,19 @@ extension WeatherModel {
   }
 }
 
+
+extension WeatherModel {
+  static let plcaeholder = WeatherModel(
+    id: "id",
+    cityName: "--",
+    description: "",
+    temperature: "--°C",
+    feelsLike: "--°C",
+    min: "--°C",
+    max: "--°C",
+    iconURL: nil
+  )
+}
 
 extension WeatherModel {
   static let mock = WeatherModel(from: .mock)

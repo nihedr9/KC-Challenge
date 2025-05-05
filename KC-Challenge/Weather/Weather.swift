@@ -21,24 +21,15 @@ struct Weather{
   @ObservableState
   struct State: Equatable {
     @Presents var destination: Destination.State?
-    var response: Result<WeatherModel, WeatherError> = .success(
-      .init(
-        id: "id",
-        cityName: "--",
-        description: "",
-        temperature: "--°C",
-        feelsLike: "--°C",
-        min: "--°C",
-        max: "--°C",
-        iconURL: nil
-      )
-    )
+    var isRequestInFlight = false
+    var response: Result<WeatherModel, WeatherError> = .success(.plcaeholder)
   }
   
   enum Action {
     case askForLocationPermission
     case checkLocationPermission
     case fetchUserLocation
+    case setRequestInFlight(Bool)
     case fetchWeather(CLLocation)
     case updateResponse(WeatherModel)
     case setError(WeatherError)
@@ -88,6 +79,8 @@ struct Weather{
       case .fetchUserLocation:
         return .run { send in
           do {
+            await send(.updateResponse(.plcaeholder))
+            await send(.setRequestInFlight(true))
             let userLocation = try await userLocationClient.getUserLocation()
             await send(.fetchWeather(userLocation))
           } catch {
@@ -107,10 +100,12 @@ struct Weather{
         
       case .updateResponse(let model):
         state.response = .success(model)
+        state.isRequestInFlight = false
         return .none
         
       case .setError(let error):
         state.response = .failure(error)
+        state.isRequestInFlight = false
         return .none
         
       case .openSettings:
@@ -121,6 +116,10 @@ struct Weather{
         return .none
         
       case .destination:
+        return .none
+        
+      case .setRequestInFlight(let isRequestInFlight):
+        state.isRequestInFlight = isRequestInFlight
         return .none
       }
     }

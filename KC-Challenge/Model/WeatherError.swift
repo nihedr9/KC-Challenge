@@ -15,28 +15,29 @@ enum WeatherError: Error {
   var title: String {
     switch self {
     case .locationPermissionIsDisabled:
-      return "Location Permission Disabled"
+      "Location Permission Disabled"
     case .locationPermissionNotDetermined:
-      return "Location Permission Not Determined"
+      "Location Permission Not Determined"
     case .locationPermissionDenied:
-      return "Location Permission Denied"
+      "Location Permission Denied"
     case .cannotFetchLocation:
-      return "Cannot Fetch Location"
+      "Cannot Fetch Location"
     case .cannotFetchWeather:
-      return "Cannot Fetch Weather"
+      "Cannot Fetch Weather"
     }
   }
   
   var description: String {
     switch self {
     case .locationPermissionIsDisabled,
-        .locationPermissionNotDetermined,
         .locationPermissionDenied:
-      return "Please enable it in settings."
+      "Please enable it in settings."
+    case .locationPermissionNotDetermined:
+      ""
     case .cannotFetchLocation:
-      return "Please check your location settings."
+      "Please check your location settings."
     case .cannotFetchWeather:
-      return "Please try again later."
+      "Please try again later."
     }
   }
 }

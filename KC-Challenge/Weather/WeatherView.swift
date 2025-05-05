@@ -13,13 +13,14 @@ struct WeatherView: View {
   
   @Bindable var store: StoreOf<Weather>
   @Environment(\.scenePhase) var scenePhase
-
+  
   var body: some View {
     VStack(spacing: 24) {
       VStack {
         switch store.response {
         case .success(let weather):
           weatherView(for: weather)
+            .redacted(reason: store.isRequestInFlight ? .placeholder : [])
         case .failure(let error):
           errorView(error)
         }
@@ -31,7 +32,7 @@ struct WeatherView: View {
     }
     .padding()
     .popover(item: $store.scope(state: \.destination?.popover, action: \.destination.popover)) { store in
-      StoryView(store: store)
+      StoriesView(store: store)
     }
     .onAppear {
       store.send(.checkLocationPermission)
@@ -75,8 +76,15 @@ struct WeatherView: View {
           .font(.subheadline.weight(.semibold))
       }
       
-      Button("Fetch Weather") {
-        store.send(.fetchUserLocation)
+      if store.isRequestInFlight {
+        ProgressView()
+        Text("Fetching weather...")
+          .font(.subheadline.weight(.semibold))
+          .unredacted()
+      } else {
+        Button("Fetch Weather") {
+          store.send(.fetchUserLocation)
+        }
       }
     }
   }
@@ -91,7 +99,7 @@ struct WeatherView: View {
       } description: {
         Text(error.description)
       } actions: {
-       errorActionView(error)
+        errorActionView(error)
       }
     }
   }
