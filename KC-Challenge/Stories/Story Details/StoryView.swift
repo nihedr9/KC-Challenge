@@ -1,5 +1,5 @@
 //
-//  StoriesView.swift
+//  StoryView.swift
 //  KC-Challenge
 //
 //  Created by Nihed Majdoub on 03/05/2025.
@@ -9,30 +9,31 @@ import SwiftUI
 import ComposableArchitecture
 import Kingfisher
 
-struct StoriesView: View {
+struct StoryView: View {
   
-  let store: StoreOf<Stories>
+  let store: StoreOf<Story>
   
   var body: some View {
     ZStack {
-      if let  story = store.selectedStory {
-        StoryView(story: story)
-          .overlay(alignment: .top) {
-            headerView
-          }
-          .onTapGesture {
-            store.send(.nextImage)
-          }
-      } else {
-        ProgressView()
+      GeometryReader { geo in
+        KFImage(store.story.imageURL)
+          .resizable()
+          .fade(duration: 0.2)
+          .scaledToFill()
+          .frame(width: geo.size.width)
+          .clipped()
+          .ignoresSafeArea()
       }
+//      .overlay(alignment: .top) {
+//        headerView
+//      }
     }
-    .onAppear {
-      store.send(.fetchStories)
-    }
-    .onDisappear {
-      store.send(.onDisappear)
-    }
+//    .onAppear {
+//      store.send(.setTimer)
+//    }
+//    .onDisappear {
+//      store.send(.onDisappear)
+//    }
   }
   
   private var headerView: some View {
@@ -49,24 +50,20 @@ struct StoriesView: View {
   }
   
   private var progressView: some View {
-    HStack(spacing: 4) {
-      ForEach(0..<store.stories.count, id: \.self) { index in
-        StoryBarView(progress: store.state.progress(for: index))
-          .frame(height: 4)
-      }
-    }
+    StoryBarView(progress: store.state.progress)
+      .frame(height: 4)
   }
   
   private var userView: some View {
     HStack {
-      KFImage(store.user.avatarURL)
+      KFImage(store.story.user.avatarURL)
         .resizable()
         .fade(duration: 0.2)
         .scaledToFill()
         .frame(width: 40, height: 40)
         .clipShape(Circle())
       
-      Text(store.user.name)
+      Text(store.story.user.name)
         .font(.callout)
       
       Spacer()
@@ -87,8 +84,14 @@ struct StoriesView: View {
 }
 
 #Preview {
-  StoriesView(store: .init(initialState: Stories.State(), reducer: {
-    Stories()
-  }))
+  StoryView(
+    store: .init(
+      initialState: Story.State(
+        story: .mocks(count: 1).first!
+      ),
+      reducer: {
+        Story()
+      })
+  )
 }
 

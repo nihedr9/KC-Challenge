@@ -8,7 +8,6 @@
 import SwiftUI
 import ComposableArchitecture
 
-@MainActor
 struct WeatherView: View {
   
   @Bindable var store: StoreOf<Weather>

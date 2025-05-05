@@ -13,54 +13,59 @@ struct Stories {
   
   @ObservableState
   struct State: Equatable {
-    var user = User.mock
-    var stories: [Story] = Story.mocks(count: 5)
-    var selectedStory: Story?
+    var stories: [StoryModel] = StoryModel.mocks(count: 5)
+    var currentStory: StoryModel?
     var timeElapsed = 0.0
-    
-    func progress(for index: Int) -> Double {
-      guard let story = stories[safe: index] else { return 0 }
-      guard selectedStory == story else { return 0 }
-      
-      return timeElapsed / story.duration
-    }
+    var progress = 0.0
   }
   
   enum Action {
     case fetchStories
-    case setStories([Story])
+    case setStories([StoryModel])
+    case setCurrentStory(StoryModel?)
     case nextImage
     case setTimer
     case timerTicked(Double)
     case cancelTimer
     case closeButtonTapped
-    case onDisappear
   }
   
   @Dependency(\.dismiss) var dismiss
+  @Dependency(StoriesClient.self) var storiesClient
   @Dependency(\.continuousClock) var clock
   private enum CancelID { case timer }
-    
+  
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
         
       case .fetchStories:
-        // we propably here have to fetch stories from an api but for now we will use a mock
         return .run { send in
-          await send(.setStories(Story.mocks(count: 5)))
+          let stories = try await storiesClient.fetchStories(5)
+          await send(.setStories(stories))
         }
         
       case .setStories(let stories):
         state.stories = stories
-        state.selectedStory = stories.first
+        return .run { send in
+          await send(.setCurrentStory(stories.first))
+        }
         
+      case .setCurrentStory(let story):
+        state.currentStory = story
         return .run { send in
           await send(.setTimer)
         }
         
+      case .nextImage:
+        return .run { [stories = state.stories] send in
+          await send(.setCurrentStory(stories.randomElement()))
+        }
+        
       case .setTimer:
-        let interval = 0.3
+        let interval = 0.2
+        state.timeElapsed = 0
+        state.progress = 0
         return .run { send in
           for await _ in clock.timer(interval: .seconds(interval)) {
             await send(.timerTicked(interval), animation: .smooth)
@@ -69,27 +74,20 @@ struct Stories {
         .cancellable(id: CancelID.timer, cancelInFlight: true)
         
       case .timerTicked(let interval):
-        guard let duration = state.selectedStory?.duration,
-              duration >= state.timeElapsed else {
+        guard let story = state.currentStory,
+              story.duration >= state.timeElapsed else {
           return .run { await $0(.cancelTimer) }
         }
         state.timeElapsed += interval
+        state.progress = state.timeElapsed / story.duration
         return .none
         
       case .cancelTimer:
         return .cancel(id: CancelID.timer)
-    
+        
       case .closeButtonTapped:
         return .run { _ in await dismiss() }
         
-      case .nextImage:
-        state.selectedStory = state.stories.randomElement()
-        return .none
-        
-      case .onDisappear:
-        return .run { send in
-          await send(.cancelTimer)
-        }
       }
     }
   }
