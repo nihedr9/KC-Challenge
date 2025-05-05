@@ -24,6 +24,7 @@ struct Stories {
     case setStories([StoryModel])
     case setCurrentStory(StoryModel?)
     case setTimer
+    case nextStory
     case timerTicked
     case cancelTimer
     case closeButtonTapped
@@ -36,7 +37,7 @@ struct Stories {
   
   private let storiesCount = 5
   private let interval = 0.2
-
+  
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
@@ -59,6 +60,19 @@ struct Stories {
           await send(.setTimer)
         }
         
+      case .nextStory:
+        let stories = state.stories
+        guard let currentStory = state.currentStory else { return .none }
+        if currentStory == stories.last {
+          return .run { _ in await dismiss() }
+        }
+        guard let index = stories.firstIndex(of: currentStory),
+              let nextStory = stories[safe: stories.index(after: index)] else {
+          return .none
+        }
+        return .run { send in
+          await send(.setCurrentStory(nextStory))
+        }
       case .setTimer:
         state.timeElapsed = 0
         state.progress = 0
@@ -73,7 +87,10 @@ struct Stories {
       case .timerTicked:
         guard let story = state.currentStory,
               story.duration >= state.timeElapsed else {
-          return .run { await $0(.cancelTimer) }
+          return .run { send in
+            await send(.cancelTimer)
+            await send(.nextStory)
+          }
         }
         state.timeElapsed += interval
         state.progress = state.timeElapsed / story.duration
