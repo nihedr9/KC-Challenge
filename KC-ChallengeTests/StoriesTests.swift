@@ -24,7 +24,12 @@ struct StoriesTests {
     }
     store.exhaustivity = .off
     
-    await store.send(.fetchStories)
+    await store.send(.fetchStories) {
+      $0.stories = []
+      $0.currentStory = nil
+      $0.timeElapsed = 0
+      $0.progress = 0
+    }
     
     await store.receive(\.setTimer) {
       $0.stories = StoryModel.mocks(count: 5)
